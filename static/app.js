@@ -106,6 +106,12 @@ function dataLoad() {
     });
 };
 
+function optionChanged(sickNewId) {
+    chartLoad(sickNewId);
+};
+
+
+
 // Step 6: Update all of the plots any time that new sample is selected
 // This will be done by filtering on the specified Id and then calling back on all the plot functions with the new data
 
