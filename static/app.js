@@ -1,13 +1,15 @@
 // Step 1:  Use the D3 Library to read in samples.json
 var filePath = "data/samples.json";
+var dropDown = d3.select("#selDataset");
+var demoInfoBox = d3.select("#sample-metadata");
 
 function chartLoad(otuChoice) {
     d3.json(filePath).then(function(data) {
         console.log(data);
-        var dataBB = data;
         var names = data.names;
-        var metadata = data.metadata[0];
-        var filterSamples = data.samples.filter(filterino => filterino.id === otuChoice);
+        var filterMetadata = data.metadata.filter(filterino => filterino.id == otuChoice); // Keep this as == and not === to account for cases of undefined or null data
+        var metadata = filterMetadata[0];
+        var filterSamples = data.samples.filter(filterino => filterino.id == otuChoice); // Keep this as == and not === to account for cases of undefined or null data
         var samples = filterSamples[0];
 
         var sampleValues = samples.sample_values;
@@ -75,6 +77,13 @@ function chartLoad(otuChoice) {
 
         // Step 5: Display each key-value pair from the metadata JSON object somewhere on the Demographic Info section
 
+        // Reset the data in the Demographic Info box
+        demoInfoBox.html("");
+
+        Object.entries(metadata).forEach(([key, value]) => {
+            demoInfoBox.append("p").text(`${key}: ${value}`);
+        });
+
     });
 
 };
@@ -85,7 +94,6 @@ function chartLoad(otuChoice) {
 
 // This will be called below so it'll filter on this when the page loads
 function dataLoad() {
-    var dropDown = d3.select(selDataset);
 
     d3.json(filePath).then((data) => {
 
@@ -106,13 +114,13 @@ function dataLoad() {
     });
 };
 
+// Step 6: Update all of the plots any time that new sample is selected
+// This will be done by filtering on the specified Id and then calling back on all the plot functions with the new data
+
+// Struggling to get this loaded... Error on HTML page showed the Event Listener was defined in the HTML file
+// This is all that we have to do 
 function optionChanged(sickNewId) {
     chartLoad(sickNewId);
 };
-
-
-
-// Step 6: Update all of the plots any time that new sample is selected
-// This will be done by filtering on the specified Id and then calling back on all the plot functions with the new data
 
 dataLoad();
